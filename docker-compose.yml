@@ -1,0 +1,8 @@
+services:
+  java-app:
+    build:
+      context: .
+    container_name: java-distroless
+    ports: 
+       - "8000:8000" 
+
