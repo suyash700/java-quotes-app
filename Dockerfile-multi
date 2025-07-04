@@ -1,0 +1,23 @@
+# ---------- Stage 1: Build ----------
+FROM openjdk:17-jdk-alpine as builder
+
+WORKDIR /build
+
+COPY /src/Main.java .
+
+RUN javac Main.java \
+ && echo "Main-Class: Main" > manifest.txt \
+ && jar cfm app.jar manifest.txt Main.class
+
+# ---------- Stage 2: Runtime ----------
+FROM gcr.io/distroless/java-base-debian12
+
+WORKDIR /app
+
+COPY --from=builder /build/app.jar .
+COPY quotes.txt .
+
+# ✅ Pass arguments to Java entrypoint
+CMD ["-jar", "app.jar"]
+
+
